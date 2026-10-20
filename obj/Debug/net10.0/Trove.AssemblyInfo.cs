@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Trove")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+526bdd7909948e93b4b2de7eb2720e5672053569")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77051a1d7b30074ecc9278ff42a7e685cbd98264")]
 [assembly: System.Reflection.AssemblyProductAttribute("Trove")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Trove")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

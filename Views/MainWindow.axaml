@@ -15,8 +15,45 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <Window.Background>
+        <!-- Gradient background -->
+        <ConicGradientBrush Center="30%,55%" Angle="35" >
+            <GradientStop Color="#7DDEE7" Offset="0.0"/>
+            <GradientStop Color="#D45F79" Offset="0.2"/>
+            <GradientStop Color="#CB6251" Offset="0.55"/>
+            <GradientStop Color="#7DDEE7" Offset="1.0"/>
+        </ConicGradientBrush>
+    </Window.Background>
+    <!-- Splitview-->
+    <SplitView IsPaneOpen="True"
+               DisplayMode="Inline"
+               OpenPaneLength="175"
+               PaneBackground="#2D6478">
+        <!-- Splitview left pane-->
+        <SplitView.Pane>
+            <TextBlock Text="Trove"
+                HorizontalAlignment="Center"
+                Margin="15"
+            FontSize="35"
+            Foreground="#7DDEE7"
+            FontFamily="fonts:MyFonts#Modern Antiqua"/>
+        </SplitView.Pane>
+
+        <!-- Main content block-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+
+
+        </Grid>
+    </SplitView>
 
 </Window>
