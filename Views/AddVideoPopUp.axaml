@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Trove.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="250"
+             Background="#80000000"
+             x:Class="Trove.Views.AddVideoPopUp"
+             x:DataType="vm:AddVideoPopUpViewModel">
+    <Border Background="#2D6478"
+            CornerRadius="10"
+            Padding="10"
+            Width="350"
+            Height="250"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        <StackPanel
+            Spacing="10">
+            <Button
+                Content="x"
+                HorizontalAlignment="Right"
+                Width="30"
+                Command="{Binding CloseCommand}" />
+            <Button
+                Content="Choose File"
+                FontFamily="fonts:MyFonts#Roboto"
+                Background="#7DDEE7"
+                HorizontalAlignment="Center"/>
+
+            <TextBlock
+                Text="File Chosen:" />
+            <TextBlock
+                Text="{Binding $parent[Window].((vm:MainViewModel)DataContext).Path}" />
+                
+            <Button
+                Content="Add Video"
+                FontFamily="fonts:MyFonts#Roboto"
+                Background="#7DDEE7"
+                HorizontalAlignment="Center"
+                
+                 />
+    
+        </StackPanel>
+    </Border>
+
+
+    
+</UserControl>

@@ -11,7 +11,7 @@
         Title="Trove">
 
     <Design.DataContext>
-        <vm:MainViewModel />
+        <vm:MainViewModel/>
     </Design.DataContext>
 
     <Window.Background>
@@ -23,30 +23,80 @@
         </ConicGradientBrush>
     </Window.Background>
 
+    <Grid>
     <!-- SplitView Layout -->
-    <SplitView IsPaneOpen="{Binding IsPaneOpen}"
-               DisplayMode="CompactInline"
-               OpenPaneLength="175"
-               CompactPaneLength="50"
-               PaneBackground="#2D6478">
+        <SplitView IsPaneOpen="{Binding IsPaneOpen}"
+                DisplayMode="CompactInline"
+                OpenPaneLength="175"
+                CompactPaneLength="50"
+                PaneBackground="#2D6478">
         
-        <SplitView.Pane>
-            <views:SidePanel DataContext="{Binding SidePanel}" />
-        </SplitView.Pane>
+            <SplitView.Pane>
+                <views:SidePanel DataContext="{Binding SidePanel}" />
+            </SplitView.Pane>
     
+            <SplitView.Content>
+            <!-- Main content block -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            
 
-        <!-- Main content block -->
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-        </Grid>
-        
-    </SplitView>
+                <Button Content="+"
+                    Width="30"
+                    Margin="10"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right" 
+                    Command="{Binding OpenPopUpCommand}"/>
+            </Grid>
+            </SplitView.Content>
+        </SplitView>
+            <Border Background="#2D6478"
+            CornerRadius="10"
+            Padding="10"
+            Width="350"
+            Height="250"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        <StackPanel
+            Spacing="10">
+            <Button
+                Content="x"
+                HorizontalAlignment="Right"
+                Width="30"
+                Command="{Binding ClosePopUpCommand}" />
+            <Button
+                Content="Choose File"
+                FontFamily="fonts:MyFonts#Roboto"
+                Background="#7DDEE7"
+                HorizontalAlignment="Center"
+                Command="{Binding OpenFileCommand}" />
+
+            <TextBlock
+                Text="File Chosen:" />
+            <TextBlock
+                Text="{Binding Path}" />
+                
+            <Button
+                Content="Add Video"
+                FontFamily="fonts:MyFonts#Roboto"
+                Background="#7DDEE7"
+                HorizontalAlignment="Center"
+                
+                 />
+    
+        </StackPanel>
+         
+    </Border>             
+    </Grid> 
 
 </Window>
