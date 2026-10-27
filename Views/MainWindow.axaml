@@ -60,43 +60,51 @@
             </Grid>
             </SplitView.Content>
         </SplitView>
-            <Border Background="#2D6478"
-            CornerRadius="10"
-            Padding="10"
-            Width="350"
-            Height="250"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-        <StackPanel
-            Spacing="10">
-            <Button
-                Content="x"
-                HorizontalAlignment="Right"
-                Width="30"
-                Command="{Binding ClosePopUpCommand}" />
-            <Button
-                Content="Choose File"
-                FontFamily="fonts:MyFonts#Roboto"
-                Background="#7DDEE7"
-                HorizontalAlignment="Center"
-                Command="{Binding OpenFileCommand}" />
+        <!-- Video add Pop-Up -->
+        <Grid IsVisible="{Binding IsPopUpVisible}" Background="#80000000">
+        <Border Background="#2D6478"
+        CornerRadius="10"
+        Padding="10"
+        Width="350"
+        Height="250"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+            <StackPanel
+                Spacing="10">
+                <Button
+                    Content="x"
+                    HorizontalAlignment="Right"
+                    Width="30"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    Command="{Binding ClosePopUpCommand}" />
+                <Button
+                    Content="Choose File"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    HorizontalAlignment="Center"
+                    Command="{Binding OpenFileCommand}" />
 
-            <TextBlock
-                Text="File Chosen:" />
-            <TextBlock
-                Text="{Binding Path}" />
+                <TextBlock>File Chosen:</TextBlock>
+                    
+                <TextBlock
+                    Text="{Binding Path}" />
+                <TextBlock
+                    Text="Title:" />
+                <TextBox/>
                 
-            <Button
-                Content="Add Video"
-                FontFamily="fonts:MyFonts#Roboto"
-                Background="#7DDEE7"
-                HorizontalAlignment="Center"
-                
-                 />
+                <Button
+                    Content="Add Video"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    HorizontalAlignment="Center"/>
+
     
-        </StackPanel>
-         
-    </Border>             
-    </Grid> 
+            </StackPanel>
+        </Border>
+        </Grid>             
+    </Grid>
 
 </Window>
