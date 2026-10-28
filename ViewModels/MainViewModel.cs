@@ -2,8 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
-using System.Reflection;
-using Trove.Views;
+using Trove.Models;
+using System.Collections.ObjectModel;
 
 namespace Trove.ViewModels;
 
@@ -27,7 +27,6 @@ public partial class MainViewModel : ObservableObject
     }
 
     //Add button file picker
-    //TODO make this button open the pop-up menu instead
     private readonly IStorageProvider _storageProvider;
     [ObservableProperty]
     private string? _selectedVideoPath;
@@ -43,11 +42,17 @@ public partial class MainViewModel : ObservableObject
         SidePanel = new SidePanelViewModel(TogglePaneCommand, IsPaneOpen);
     }
 
+    //Video container collection
+    public ObservableCollection<VideoContainer> Videos { get; } = [];
+
     [ObservableProperty]
     private string? path = "None";
+
+    [ObservableProperty]
+    private string _videoTitle = string.Empty;
     [RelayCommand]
+
     //Opens OS file picker window and extracts file path
-    // TODO: move this into the pop-up window functionality, button will instead open the pop-up
     
     private async Task OpenFileAsync()
     {
@@ -67,8 +72,32 @@ public partial class MainViewModel : ObservableObject
         if (files.Count > 0)
         {
             //here is the file path
-            string? path = files[0].TryGetLocalPath();
+            Path = files[0].TryGetLocalPath();
         }
+    }
+
+    string defaultThumbnail = "avares://Trove/Assets/VideoPlaceholderImage.png";
+
+    //add video button control
+    [RelayCommand]
+    private void AddVideo()
+    {
+        //create a new VideoContainer
+        var newVideo = new VideoContainer
+        {
+            Title = VideoTitle,
+            VideoPath = Path ?? string.Empty,
+            ThumbnailPath = defaultThumbnail
+        };
+
+        //update grid
+        Videos.Add(newVideo);
+
+        //clear inputs and close popup
+        VideoTitle = string.Empty;
+        Path = string.Empty;
+        IsPopUpVisible = false;
+
     }
 
     //pop-up window toggles
@@ -85,7 +114,9 @@ public partial class MainViewModel : ObservableObject
     private void ClosePopUp()
     {
         IsPopUpVisible = false;
-        Path = "None";
+        Path = string.Empty;
     }
+
+
 }
 

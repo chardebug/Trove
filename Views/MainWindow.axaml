@@ -57,8 +57,29 @@
                     Grid.Column="1"
                     HorizontalAlignment="Right" 
                     Command="{Binding OpenPopUpCommand}"/>
+
+                <!-- Main collection of videos -->
+                <ItemsControl ItemsSource="{Binding Videos}">
+                     <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="16" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <!-- The video container is defined here -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Width="150" Height="250">
+                                <Image Source="{Binding ThumbnailPath}" Stretch="UniformToFill" />
+                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
+
             </SplitView.Content>
+            
+             
         </SplitView>
         <!-- Video add Pop-Up -->
         <Grid IsVisible="{Binding IsPopUpVisible}" Background="#80000000">
@@ -92,10 +113,12 @@
                     Text="{Binding Path}" />
                 <TextBlock
                     Text="Title:" />
-                <TextBox/>
+                <TextBox Text="{Binding VideoTitle}"/>
+                
                 
                 <Button
                     Content="Add Video"
+                    Command="{Binding AddVideoCommand}"
                     FontFamily="fonts:MyFonts#Roboto"
                     Background="#D45F79"
                     Foreground="#FFC59E"
