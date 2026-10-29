@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Media;
 using System;
 
 namespace Trove;
@@ -19,6 +20,10 @@ sealed class Program
 #if DEBUG
             .WithDeveloperTools()
 #endif
+            .ConfigureFonts(fontManager =>
+            {
+                fontManager.AddFontCollection(new TroveFonts());
+            })
             .WithInterFont()
             .LogToTrace();
 }

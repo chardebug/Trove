@@ -1,6 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Trove.ViewModels"
+        xmlns:views="using:Trove.Views"
+        xmlns:converters="using:Trove.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -8,15 +10,128 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Trove">
+    
+    <Window.Resources>
+        <converters:PathToBitmapConverter x:Key="PathToBitmapConverter"/>
+    </Window.Resources>
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
+        <vm:MainViewModel/>
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <Window.Background>
+        <ConicGradientBrush Center="30%,55%" Angle="35" >
+            <GradientStop Color="#7DDEE7" Offset="0.0"/>
+            <GradientStop Color="#D45F79" Offset="0.2"/>
+            <GradientStop Color="#CB6251" Offset="0.55"/>
+            <GradientStop Color="#7DDEE7" Offset="1.0"/>
+        </ConicGradientBrush>
+    </Window.Background>
+
+    <Grid>
+    <!-- SplitView Layout -->
+        <SplitView IsPaneOpen="{Binding IsPaneOpen}"
+                DisplayMode="CompactInline"
+                OpenPaneLength="175"
+                CompactPaneLength="50"
+                PaneBackground="#2D6478">
+        
+            <SplitView.Pane>
+                <views:SidePanel DataContext="{Binding SidePanel}" />
+            </SplitView.Pane>
+    
+            <SplitView.Content>
+                <!-- Top bar -->
+                <DockPanel>
+            
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="10">
+                        <Button Content="+"
+                            Width="30"
+                            Background="#D45F79"
+                            Foreground="#FFC59E"
+                            HorizontalAlignment="Right" 
+                            Command="{Binding OpenPopUpCommand}"/>
+                    </StackPanel>
+            
+
+            <!-- Main content block -->
+                <ScrollViewer>
+                    <!-- Main collection of videos -->
+                    <ItemsControl ItemsSource="{Binding Videos}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <!-- The video container is defined here -->
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <Border Width="150" Height="225" ClipToBounds="True" Margin="20">
+                                        <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" Stretch="UniformToFill" />
+                                    </Border>
+                                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                                    
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            
+
+            </DockPanel>
+
+            </SplitView.Content>
+            
+             
+        </SplitView>
+        <!-- Video add Pop-Up -->
+        <Grid IsVisible="{Binding IsPopUpVisible}" Background="#80000000">
+        <Border Background="#2D6478"
+        CornerRadius="10"
+        Padding="10"
+        Width="350"
+        Height="250"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+            <StackPanel
+                Spacing="10">
+                <Button
+                    Content="x"
+                    HorizontalAlignment="Right"
+                    Width="30"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    Command="{Binding ClosePopUpCommand}" />
+                <Button
+                    Content="Choose File"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    HorizontalAlignment="Center"
+                    Command="{Binding OpenFileCommand}" />
+
+                <TextBlock>File Chosen:</TextBlock>
+                    
+                <TextBlock
+                    Text="{Binding Path}" />
+                <TextBlock
+                    Text="Title:" />
+                <TextBox Text="{Binding VideoTitle}"/>
+                
+                
+                <Button
+                    Content="Add Video"
+                    Command="{Binding AddVideoCommand}"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    HorizontalAlignment="Center"/>
+
+    
+            </StackPanel>
+        </Border>
+        </Grid>             
+    </Grid>
 
 </Window>
