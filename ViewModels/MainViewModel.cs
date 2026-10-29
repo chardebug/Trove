@@ -76,11 +76,12 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    string defaultThumbnail = "avares://Trove/Assets/VideoPlaceholderImage.png";
+    private string defaultThumbnail = "avares://Trove/Assets/VideoPlaceholderImage.png";
 
     //add video button control
     [RelayCommand]
     private void AddVideo()
+    
     {
         //create a new VideoContainer
         var newVideo = new VideoContainer
