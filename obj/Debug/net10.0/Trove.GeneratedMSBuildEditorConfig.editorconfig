@@ -8,8 +8,8 @@ build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassNa
 build_property.AvaloniaNameGeneratorAttachDevTools = true
 build_property.AvaloniaUseCompiledBindingsByDefault = true
 build_property.AvaloniaMainPackageVersion = 12.1.2
-build_property.AvaloniaPreviewerNetCoreToolPath = C:\Users\irlippie\.nuget\packages\avalonia\12.1.2\buildTransitive\\..\tools\net8.0\designer\Avalonia.Designer.HostApp.dll
-build_property.AvaloniaResourcePaths = C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Assets\avalonia-logo.ico,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Assets\Fonts\ModernAntiqua-Regular.ttf,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Assets\Fonts\Roboto-SemiBold.ttf,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Assets\Fonts\Roboto-SemiBoldItalic.ttf,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Assets\VideoPlaceholderImage.png,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\App.axaml,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Views\MainWindow.axaml,C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\Views\SidePanel.axaml
+build_property.AvaloniaPreviewerNetCoreToolPath = C:\Users\allan\.nuget\packages\avalonia\12.1.2\buildTransitive\\..\tools\net8.0\designer\Avalonia.Designer.HostApp.dll
+build_property.AvaloniaResourcePaths = C:\Users\allan\Downloads\Trove\Trove\Assets\avalonia-logo.ico,C:\Users\allan\Downloads\Trove\Trove\Assets\Fonts\ModernAntiqua-Regular.ttf,C:\Users\allan\Downloads\Trove\Trove\Assets\Fonts\Roboto-SemiBold.ttf,C:\Users\allan\Downloads\Trove\Trove\Assets\Fonts\Roboto-SemiBoldItalic.ttf,C:\Users\allan\Downloads\Trove\Trove\Assets\VideoPlaceholderImage.png,C:\Users\allan\Downloads\Trove\Trove\App.axaml,C:\Users\allan\Downloads\Trove\Trove\Views\MainWindow.axaml,C:\Users\allan\Downloads\Trove\Trove\Views\SidePanel.axaml
 build_property.MvvmToolkitEnableINotifyPropertyChangingSupport = true
 build_property._MvvmToolkitIsUsingWindowsRuntimePack = false
 build_property.CsWinRTComponent = 
@@ -27,17 +27,17 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Trove
-build_property.ProjectDir = C:\Users\irlippie\OneDrive - University of Alaska\TroveFiles\Trove\
+build_property.ProjectDir = C:\Users\allan\Downloads\Trove\Trove\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/irlippie/OneDrive - University of Alaska/TroveFiles/Trove/App.axaml]
+[C:/Users/allan/Downloads/Trove/Trove/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/irlippie/OneDrive - University of Alaska/TroveFiles/Trove/Views/MainWindow.axaml]
+[C:/Users/allan/Downloads/Trove/Trove/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/irlippie/OneDrive - University of Alaska/TroveFiles/Trove/Views/SidePanel.axaml]
+[C:/Users/allan/Downloads/Trove/Trove/Views/SidePanel.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
