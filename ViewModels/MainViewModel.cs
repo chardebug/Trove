@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Trove.Models;
 using System.Collections.ObjectModel;
+using Trove.VLCPlayback;
+using LibVLCSharp.Shared;
 
 namespace Trove.ViewModels;
 
@@ -28,17 +30,26 @@ public partial class MainViewModel : ObservableObject
 
     //Add button file picker
     private readonly IStorageProvider _storageProvider;
+    private readonly VideoPlayerService? _videoPlayerService;
+
+    public MediaPlayer? MediaPlayer => _videoPlayerService?.MediaPlayer;
+
     [ObservableProperty]
     private string? _selectedVideoPath;
 
-    public MainViewModel() : this(null!)
+    public MainViewModel() : this(null!, null)
     {
         
     }
 
-    public MainViewModel(IStorageProvider storageProvider)
+    public MainViewModel(IStorageProvider storageProvider) : this(storageProvider, null)
+    {
+    }
+
+    public MainViewModel(IStorageProvider storageProvider, VideoPlayerService? videoPlayerService)
     {
         _storageProvider = storageProvider;
+        _videoPlayerService = videoPlayerService;
         SidePanel = new SidePanelViewModel(TogglePaneCommand, IsPaneOpen);
     }
 
@@ -117,7 +128,4 @@ public partial class MainViewModel : ObservableObject
         IsPopUpVisible = false;
         Path = string.Empty;
     }
-
-
 }
-
