@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Trove.Models;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace Trove.ViewModels;
 
@@ -46,7 +47,16 @@ public partial class MainViewModel : ObservableObject
     public ObservableCollection<VideoContainer> Videos { get; } = [];
 
     [ObservableProperty]
-    private string? path = "None";
+    private string? videoFilePath = "None";
+
+    [ObservableProperty]
+    private string? thumbnailFilePath = "None";
+
+    [ObservableProperty]
+    private string videoFileName = "None";
+
+    [ObservableProperty]
+    private string thumbnailFileName = "None";
 
     [ObservableProperty]
     private string _videoTitle = string.Empty;
@@ -54,7 +64,7 @@ public partial class MainViewModel : ObservableObject
 
     //Opens OS file picker window and extracts file path
     
-    private async Task OpenFileAsync()
+    private async Task OpenVideoFileAsync()
     {
         //only allow video files
         var videoFileType = new FilePickerFileType("Video Files")
@@ -72,11 +82,28 @@ public partial class MainViewModel : ObservableObject
         if (files.Count > 0)
         {
             //here is the file path
-            Path = files[0].TryGetLocalPath();
+            VideoFilePath = files[0].TryGetLocalPath();
+            VideoFileName = files[0].Name;
         }
     }
 
-    private string defaultThumbnail = "avares://Trove/Assets/VideoPlaceholderImage.png";
+    [RelayCommand]
+    private async Task OpenThumbnailFileAsync()
+    {
+
+        var files = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Select Thumbnail File",
+            AllowMultiple = false,
+            FileTypeFilter = [FilePickerFileTypes.ImageAll]
+        });
+        if (files.Count > 0)
+        { 
+            //here is the file path
+            ThumbnailFilePath = files[0].TryGetLocalPath();
+            ThumbnailFileName = files[0].Name;
+        }
+    }
 
     //add video button control
     [RelayCommand]
@@ -87,8 +114,8 @@ public partial class MainViewModel : ObservableObject
         var newVideo = new VideoContainer
         {
             Title = VideoTitle,
-            VideoPath = Path ?? string.Empty,
-            ThumbnailPath = defaultThumbnail
+            VideoPath = VideoFilePath ?? string.Empty,
+            ThumbnailPath = ThumbnailFilePath ?? string.Empty
         };
 
         //update grid
@@ -96,7 +123,10 @@ public partial class MainViewModel : ObservableObject
 
         //clear inputs and close popup
         VideoTitle = string.Empty;
-        Path = string.Empty;
+        VideoFilePath = string.Empty;
+        ThumbnailFilePath = string.Empty;
+        VideoFileName = "None";
+        ThumbnailFileName = "None";
         IsPopUpVisible = false;
 
     }
@@ -115,7 +145,10 @@ public partial class MainViewModel : ObservableObject
     private void ClosePopUp()
     {
         IsPopUpVisible = false;
-        Path = string.Empty;
+        ThumbnailFilePath = string.Empty;
+        VideoFilePath = string.Empty;
+        VideoFileName = "None";
+        ThumbnailFileName = "None";
     }
 
 
