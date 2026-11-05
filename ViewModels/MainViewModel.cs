@@ -6,6 +6,8 @@ using Trove.Models;
 using Trove.Views;
 using System.Collections.ObjectModel;
 using System.IO;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes; 
 
 namespace Trove.ViewModels;
 
@@ -156,9 +158,14 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void PlayVideo(VideoContainer? video)
     {
-        System.Diagnostics.Debug.WriteLine($"PlayVideo clicked. FilePath='{video?.VideoPath}'");
-        if(video is null || string.IsNullOrWhiteSpace(video.VideoPath)) return;
-        new VideoPlayer { DataContext = new VideoPlayerViewModel(video.VideoPath) }.Show();
+        //exit if video path is null or empty
+        if (video is null || string.IsNullOrWhiteSpace(video.VideoPath)) return;
+
+        var owner = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        var player = new VideoPlayer(video.VideoPath);
+
+        if (owner is not null) player.Show(owner);
+        else player.Show();
     }
 
 }

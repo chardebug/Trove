@@ -67,14 +67,53 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <Border Width="150" Height="225" ClipToBounds="True" Margin="20">
-                                        <Button
-                                            
-                                            Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).PlayVideoCommand}"
-                                            CommandParameter="{Binding}">
-                                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" Stretch="UniformToFill" />
-                                        </Button>
-                                    </Border>
+                                    
+                                        <!--Video container is a button in order to play videos-->
+                                        <Grid Width="150" Height="225" Margin="20">
+                                            <Grid.Styles>
+                                                <!--Hide the play button by default-->
+                                                <Style Selector="Button.PlayOverlay">
+                                                    
+                                                    <Setter Property="Opacity" Value="0" />
+                                                    
+                                                    
+                                                </Style>
+
+                        
+
+                                                <!-- Keeps the background consistent when hovering the button itself -->
+                                                <Style Selector="Button.PlayOverlay:pointerover">
+                                                    
+                                                    <Setter Property="Opacity" Value="1" />
+                                                </Style>
+
+                                                <Style Selector="Button.PlayOverlay:pointerover /template/ ContentPresenter">
+                                                    <Setter Property="Background" Value="#88000000"/>
+                                                </Style>
+
+                                            </Grid.Styles>
+
+                                            <!--Background image-->
+                                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" 
+                                                Stretch="UniformToFill" />
+                                            <!--Button Overlay-->
+                                            <Button Classes="PlayOverlay"
+                                                Height="225"
+                                                Width="150"
+                                                CornerRadius="0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).PlayVideoCommand}"
+                                                CommandParameter="{Binding}">
+
+                                                <PathIcon Data="M 0 0 L 20 10 L 0 20 Z" 
+                                                    Width="24" 
+                                                    Height="24" 
+                                                    Foreground="White"/>
+
+                                            </Button>
+                                        </Grid>
+                                    
                                     <TextBlock Text="{Binding Title}" Width="145" Height="50" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" />
                                     
                                 </StackPanel>

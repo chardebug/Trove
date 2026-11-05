@@ -1,9 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Trove.ViewModels"
         xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
         x:Class="Trove.Views.VideoPlayer"
-        x:DataType="vm:VideoPlayerViewModel"
         Title="Trove Player" Width="960" Height="540">
-    <vlc:VideoView MediaPlayer="{Binding MediaPlayer}"/>
+    <vlc:VideoView x:Name="VideoView"/>
 </Window>
