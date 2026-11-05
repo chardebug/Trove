@@ -68,7 +68,12 @@
                             <DataTemplate>
                                 <StackPanel>
                                     <Border Width="150" Height="225" ClipToBounds="True" Margin="20">
-                                        <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" Stretch="UniformToFill" />
+                                        <Button
+                                            
+                                            Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).PlayVideoCommand}"
+                                            CommandParameter="{Binding}">
+                                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" Stretch="UniformToFill" />
+                                        </Button>
                                     </Border>
                                     <TextBlock Text="{Binding Title}" Width="145" Height="50" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" />
                                     

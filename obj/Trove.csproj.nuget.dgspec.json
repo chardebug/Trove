@@ -69,6 +69,14 @@
             "CommunityToolkit.Mvvm": {
               "target": "Package",
               "version": "[8.4.2, )"
+            },
+            "LibVLCSharp.Avalonia": {
+              "target": "Package",
+              "version": "[3.10.2, )"
+            },
+            "VideoLAN.LibVLC.Windows": {
+              "target": "Package",
+              "version": "[3.0.24, )"
             }
           },
           "imports": [

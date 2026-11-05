@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "h7hctKy2b7I=",
+  "dgSpecHash": "QJMSjUw33j4=",
   "success": true,
   "projectFilePath": "C:\\Users\\irlippie\\OneDrive - University of Alaska\\TroveFiles\\Trove\\Trove.csproj",
   "expectedPackageFiles": [
@@ -25,6 +25,8 @@
     "C:\\Users\\irlippie\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\8.3.1.3\\harfbuzzsharp.nativeassets.macos.8.3.1.3.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\harfbuzzsharp.nativeassets.webassembly\\8.3.1.3\\harfbuzzsharp.nativeassets.webassembly.8.3.1.3.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\harfbuzzsharp.nativeassets.win32\\8.3.1.3\\harfbuzzsharp.nativeassets.win32.8.3.1.3.nupkg.sha512",
+    "C:\\Users\\irlippie\\.nuget\\packages\\libvlcsharp\\3.10.2\\libvlcsharp.3.10.2.nupkg.sha512",
+    "C:\\Users\\irlippie\\.nuget\\packages\\libvlcsharp.avalonia\\3.10.2\\libvlcsharp.avalonia.3.10.2.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\microcom.runtime\\0.11.6\\microcom.runtime.0.11.6.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
@@ -34,7 +36,8 @@
     "C:\\Users\\irlippie\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.4\\skiasharp.nativeassets.macos.3.119.4.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\3.119.4\\skiasharp.nativeassets.webassembly.3.119.4.nupkg.sha512",
     "C:\\Users\\irlippie\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.4\\skiasharp.nativeassets.win32.3.119.4.nupkg.sha512",
-    "C:\\Users\\irlippie\\.nuget\\packages\\tmds.dbus.protocol\\0.94.1\\tmds.dbus.protocol.0.94.1.nupkg.sha512"
+    "C:\\Users\\irlippie\\.nuget\\packages\\tmds.dbus.protocol\\0.94.1\\tmds.dbus.protocol.0.94.1.nupkg.sha512",
+    "C:\\Users\\irlippie\\.nuget\\packages\\videolan.libvlc.windows\\3.0.24\\videolan.libvlc.windows.3.0.24.nupkg.sha512"
   ],
   "logs": []
 }

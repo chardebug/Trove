@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Trove.Models;
+using Trove.Views;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -151,6 +152,14 @@ public partial class MainViewModel : ObservableObject
         ThumbnailFileName = "None";
     }
 
+    //Video player command
+    [RelayCommand]
+    private void PlayVideo(VideoContainer? video)
+    {
+        System.Diagnostics.Debug.WriteLine($"PlayVideo clicked. FilePath='{video?.VideoPath}'");
+        if(video is null || string.IsNullOrWhiteSpace(video.VideoPath)) return;
+        new VideoPlayer { DataContext = new VideoPlayerViewModel(video.VideoPath) }.Show();
+    }
 
 }
 
