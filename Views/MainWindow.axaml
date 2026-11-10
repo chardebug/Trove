@@ -51,6 +51,10 @@
                             Foreground="#FFC59E"
                             HorizontalAlignment="Right" 
                             Command="{Binding OpenPopUpCommand}"/>
+                        <TextBlock Text="{Binding StatusMessage}"
+                            Foreground="#8B0000"
+                            VerticalAlignment="Center"
+                            TextWrapping="Wrap" />
                     </StackPanel>
             
 

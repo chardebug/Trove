@@ -9,6 +9,8 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
+    <EmbeddedResource Include="Database\VideoDatabase.sql"
+    LogicalName="Trove.Database.VideoDatabase.sql" />
   </ItemGroup>
  
   <ItemGroup>
