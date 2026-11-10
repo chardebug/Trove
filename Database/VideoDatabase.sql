@@ -1,4 +1,4 @@
-Create Table Video
+Create Table If Not Exists Video
 (
     video_id integer PRIMARY KEY,
     file_path varchar(255),
@@ -11,13 +11,13 @@ Create Table Video
 );
 
 
-Create Table Tags
+Create Table If Not Exists Tags
 (
     tag_name varchar(255) PRIMARY KEY
 
 );
 
-Create Table Video_Tags
+Create Table If Not Exists Video_Tags
 (
     video_tag_id integer PRIMARY KEY,
     video_id Integer,
