@@ -1,3 +1,8 @@
-# Ignore build artifacts
+# Ignore build directories
 **/bin/
 **/obj/
+
+# Ignore editor project config files, add more as necessary
+.idea
+.vscode
+.vs
