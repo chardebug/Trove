@@ -17,6 +17,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top" 
                 Command="{Binding TogglePaneCommand}"/>
+
         <TextBlock Text="Trove"
             HorizontalAlignment="Center"
             FontSize="35"
@@ -24,9 +25,10 @@
             FontFamily="fonts:MyFonts#Modern Antiqua"
             IsVisible="{Binding IsOpen}"/>
 
+        <TextBox Text="{Binding SearchText}"
+            Margin="40"
+            PlaceholderText="Search"
+            IsVisible="{Binding IsOpen}"/>
 
-    </StackPanel>
-
-
-    
+    </StackPanel>   
 </UserControl>
