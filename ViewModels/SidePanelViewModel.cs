@@ -9,4 +9,8 @@ public partial class SidePanelViewModel(ICommand togglePaneCommand, bool isPaneO
 
     [ObservableProperty]
     public partial bool IsOpen { get; set; } = isPaneOpen;
+    
+    [ObservableProperty]
+    public partial string SearchText { get; set; } = "";
+    
 }
