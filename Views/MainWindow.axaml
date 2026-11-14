@@ -15,10 +15,6 @@
         <converters:PathToBitmapConverter x:Key="PathToBitmapConverter"/>
     </Window.Resources>
 
-    <Design.DataContext>
-        <vm:MainViewModel/>
-    </Design.DataContext>
-
     <Window.Background>
         <ConicGradientBrush Center="30%,55%" Angle="35" >
             <GradientStop Color="#7DDEE7" Offset="0.0"/>
@@ -51,6 +47,8 @@
                             Foreground="#FFC59E"
                             HorizontalAlignment="Right" 
                             Command="{Binding OpenPopUpCommand}"/>
+                        <!-- Search bar goes here -->
+
                     </StackPanel>
             
 

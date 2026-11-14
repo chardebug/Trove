@@ -1,13 +1,14 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
+        xmlns:vm="using:Trove.ViewModels"
         x:Class="Trove.Views.VideoPlayer"
         Title="Trove Player" Width="960" Height="540">
 
     <!--bottom bar for seeking and pause/play-->
     <vlc:VideoView x:Name="VideoView">
 
-        <Panel x:Name="Overlay" Background="Transparent">
+        <Panel x:Name="OverlayRoot" Background="Transparent" x:DataType="vm:VideoPlayerViewModel">
             <Border x:Name="ControlBar" VerticalAlignment="Bottom" Background="#67000000">
                 <Border.Transitions>
                     <Transitions>
@@ -17,10 +18,10 @@
                 </Border.Transitions>
 
                 <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-                    <Button x:Name="PlayPauseButton" Width="30" Content="⏸" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                    <TextBlock x:Name="CurrentTimeText" Grid.Column="1" Text="0:00" VerticalAlignment="Center" Foreground="White" Margin="5" />
-                    <Slider x:Name="SeekSlider" Grid.Column="2" Minimum="0" Maximum="1" VerticalAlignment="Center" Foreground="White" Margin="5" />
-                    <TextBlock x:Name="LengthText" Grid.Column="3" Text="0:00" VerticalAlignment="Center" Foreground="White" Margin="5" />
+                    <Button Width="30" Content="{Binding PlayPauseLabel}" Command="{Binding TogglePlayPauseCommand}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Column="1" Text="{Binding PositionText}" VerticalAlignment="Center" Foreground="White" Margin="5" />
+                    <Slider x:Name="SeekSlider" Grid.Column="2" Minimum="0" Maximum="{Binding Length}" Value="{Binding Position, Mode=OneWay}" VerticalAlignment="Center" Foreground="White" Margin="5" />
+                    <TextBlock Grid.Column="3" Text="{Binding LengthText}" VerticalAlignment="Center" Foreground="White" Margin="5" />
                 </Grid>
             </Border>
         </Panel>
