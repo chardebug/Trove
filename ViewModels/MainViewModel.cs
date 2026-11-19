@@ -237,10 +237,14 @@ public partial class MainViewModel : ObservableObject
     private void ConfirmDelete()
     {
         var toRemove = Videos.Where(v => v.IsSelected).ToList();
-        foreach (var v in toRemove) Videos.Remove(v);
+        foreach (var v in toRemove) 
+        {
+            Videos.Remove(v);
+            allVideos.Remove(v); // Removes video from master backup list as well
+        }
         ToggleSelectionMode();
         IsConfirmationVisible = false;
-}
+    }
 
     [RelayCommand]
     private void Cancel()
