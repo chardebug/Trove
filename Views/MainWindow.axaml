@@ -47,6 +47,25 @@
                             Foreground="#FFC59E"
                             HorizontalAlignment="Right" 
                             Command="{Binding OpenPopUpCommand}"/>
+                        <Button Content="Select"
+                                Background="#D45F79"
+                                Foreground="#FFC59E"
+                                FontFamily="fonts:MyFonts#Roboto"
+                                IsVisible="{Binding IsSelectButtonVisible}"
+                                Command="{Binding ToggleSelectionModeCommand}" />
+                        <Button Content="Cancel"
+                                Background="#D45F79"
+                                Foreground="#FFC59E"
+                                FontFamily="fonts:MyFonts#Roboto"
+                                IsVisible="{Binding IsCancelButtonVisible}"
+                                Command="{Binding CancelCommand}" />
+                        <Button Content="Delete"
+                                Command="{Binding OpenConfirmationCommand}"
+                                Background="#D45F79"
+                                Foreground="#FFC59E"
+                                FontFamily="fonts:MyFonts#Roboto"
+                                IsVisible="{Binding IsDeleteButtonVisible}" />
+                        
                         <!-- Search bar goes here -->
 
                     </StackPanel>
@@ -101,6 +120,7 @@
                                                 CornerRadius="0"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
+                                                IsVisible="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).CanPlay}"
                                                 Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).PlayVideoCommand}"
                                                 CommandParameter="{Binding}">
 
@@ -110,9 +130,12 @@
                                                     Foreground="White"/>
 
                                             </Button>
+                                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5, 5"
+                                                      IsVisible="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).IsSelectionMode}"
+                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
                                         </Grid>
                                     
-                                    <TextBlock Text="{Binding Title}" Width="145" Height="50" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Title}" Width="145" Height="50" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" />
                                     
                                 </StackPanel>
                             </DataTemplate>
@@ -212,9 +235,45 @@
                     Canvas.Left="125" />
 
     
-    </Canvas>
+            </Canvas>
         </Border>
-        </Grid>             
+        </Grid>
+        <!-- Confirmation pop-up -->
+        <Grid IsVisible="{Binding IsConfirmationVisible}" Background="#80000000">
+            <Border Background="#2D6478"
+                CornerRadius="10"
+                Padding="10"
+                Width="350"
+                Height="150"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            
+            </Border>
+            <Grid ColumnDefinitions="100,*" RowDefinitions="30,*,*" HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" 
+                    Text=" Delete the Selected Video(s)?"  
+                    Foreground="#7DDEE7" 
+                    FontFamily="fonts:MyFonts#Modern Antiqua"
+                    FontSize="15" 
+                    HorizontalAlignment="Center"/>
+                <Button Width="80" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center"
+                    Content="Cancel"
+                    Command="{Binding CloseConfirmationCommand}"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    HorizontalAlignment="Center"
+                    Background="#3F99A1"
+                    Foreground="#1D4958" />
+                <Button Width="80" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center"
+                    Content="Delete" 
+                    Command="{Binding ConfirmDeleteCommand}"
+                    FontFamily="fonts:MyFonts#Roboto" 
+                    HorizontalAlignment="Center" 
+                    Background="#D45F79"
+                    Foreground="#FFC59E"/>
+
+            </Grid> 
+        </Grid>                         
     </Grid>
 
 </Window>

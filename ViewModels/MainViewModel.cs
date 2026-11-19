@@ -6,6 +6,8 @@ using Trove.Models;
 using System.Collections.ObjectModel;
 using System.IO;
 using Trove.Services;
+using System.Linq;
+
 
 namespace Trove.ViewModels;
 
@@ -155,13 +157,85 @@ public partial class MainViewModel : ObservableObject
         ThumbnailFileName = "None";
     }
 
-    //Video player command
+    //confirmation window toggles
+
+    [ObservableProperty]
+    private bool _IsConfirmationVisible;
+
     [RelayCommand]
+    private void OpenConfirmation()
+    {
+        IsConfirmationVisible = true;
+    }
+
+    [RelayCommand]
+    private void CloseConfirmation()
+    {
+        IsConfirmationVisible = false;
+    }
+
+    //Select controls
+    [ObservableProperty]
+    private bool _IsSelectButtonVisible = true;
+
+    [ObservableProperty]
+    private bool _IsDeleteButtonVisible = false;
+
+    [ObservableProperty]
+    private bool _IsCancelButtonVisible = false;
+
+    //if selection mode is on, do not play videos
+    [ObservableProperty]  
+    [NotifyPropertyChangedFor(nameof(CanPlay), nameof(SelectButtonText))]
+    [NotifyCanExecuteChangedFor(nameof(PlayVideoCommand))]
+    private bool _isSelectionMode;
+
+    public bool CanPlay => !IsSelectionMode;
+    public string SelectButtonText => IsSelectionMode ? "Cancel" : "Select";
+
+    [RelayCommand]
+    private void ToggleSelectionMode()
+    {
+        IsSelectButtonVisible = !IsSelectButtonVisible;
+        IsSelectionMode = !IsSelectionMode;
+        IsDeleteButtonVisible = !IsDeleteButtonVisible;
+        IsCancelButtonVisible = !IsCancelButtonVisible;
+
+        //to do: make checkboxes visible
+    }
+
+    partial void OnIsSelectionModeChanged(bool value)
+    {
+        if (value) return;
+        foreach (var v in Videos) v.IsSelected = false;
+    }
+
+    //Video player command
+    [RelayCommand(CanExecute = nameof(CanPlay))]
     private void PlayVideo(VideoContainer? video)
     {
         if (video is null || string.IsNullOrWhiteSpace(video.VideoPath)) return;
         _videoPlayer.Play(video.VideoPath);
     }
+
+    
+
+    [RelayCommand]
+    private void ConfirmDelete()
+    {
+        var toRemove = Videos.Where(v => v.IsSelected).ToList();
+        foreach (var v in toRemove) Videos.Remove(v);
+        ToggleSelectionMode();
+        IsConfirmationVisible = false;
+}
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        ToggleSelectionMode();
+    }
+
+    
 }
 
 
