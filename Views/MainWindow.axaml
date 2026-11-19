@@ -15,10 +15,6 @@
         <converters:PathToBitmapConverter x:Key="PathToBitmapConverter"/>
     </Window.Resources>
 
-    <Design.DataContext>
-        <vm:MainViewModel/>
-    </Design.DataContext>
-
     <Window.Background>
         <ConicGradientBrush Center="30%,55%" Angle="35" >
             <GradientStop Color="#7DDEE7" Offset="0.0"/>
@@ -51,8 +47,30 @@
                             Foreground="#FFC59E"
                             HorizontalAlignment="Right" 
                             Command="{Binding OpenPopUpCommand}"/>
+                        <Button Content="Select"
+                                Background="#D45F79"
+                                Foreground="#FFC59E"
+                                FontFamily="fonts:MyFonts#Roboto"
+                                IsVisible="{Binding IsSelectButtonVisible}"
+                                Command="{Binding ToggleSelectionModeCommand}" />
+                        <Button Content="Cancel"
+                                Background="#D45F79"
+                                Foreground="#FFC59E"
+                                FontFamily="fonts:MyFonts#Roboto"
+                                IsVisible="{Binding IsCancelButtonVisible}"
+                                Command="{Binding CancelCommand}" />
+                        <Button Content="Delete"
+                                Command="{Binding OpenConfirmationCommand}"
+                                Background="#D45F79"
+                                Foreground="#FFC59E"
+                                FontFamily="fonts:MyFonts#Roboto"
+                                IsVisible="{Binding IsDeleteButtonVisible}" />
+                         <TextBox Width ="300"
+                            Text="{Binding SearchText}"
+                            PlaceholderText="Search by title..."
+                            VerticalContentAlignment="Center"/>
+
                     </StackPanel>
-            
 
             <!-- Main content block -->
                 <ScrollViewer>
@@ -67,10 +85,55 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <Border Width="150" Height="225" ClipToBounds="True" Margin="20">
-                                        <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" Stretch="UniformToFill" />
-                                    </Border>
-                                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                                    
+                                        <!--Video container is a button in order to play videos-->
+                                        <Grid Width="150" Height="225" Margin="20">
+                                            <Grid.Styles>
+                                                <!--Hide the play button by default-->
+                                                <Style Selector="Button.PlayOverlay">
+                                                    
+                                                    <Setter Property="Opacity" Value="0" />
+                                                       
+                                                </Style>
+
+                                                <!-- Keeps the background consistent when hovering the button itself -->
+                                                <Style Selector="Button.PlayOverlay:pointerover">
+                                                    
+                                                    <Setter Property="Opacity" Value="1" />
+                                                </Style>
+
+                                                <Style Selector="Button.PlayOverlay:pointerover /template/ ContentPresenter">
+                                                    <Setter Property="Background" Value="#88000000"/>
+                                                </Style>
+
+                                            </Grid.Styles>
+
+                                            <!--Background image-->
+                                            <Image Source="{Binding ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" 
+                                                Stretch="UniformToFill" />
+                                            <!--Button Overlay-->
+                                            <Button Classes="PlayOverlay"
+                                                Height="225"
+                                                Width="150"
+                                                CornerRadius="0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).CanPlay}"
+                                                Command="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).PlayVideoCommand}"
+                                                CommandParameter="{Binding}">
+
+                                                <PathIcon Data="M 0 0 L 20 10 L 0 20 Z" 
+                                                    Width="24" 
+                                                    Height="24" 
+                                                    Foreground="White"/>
+
+                                            </Button>
+                                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5, 5"
+                                                      IsVisible="{Binding $parent[ItemsControl].((vm:MainViewModel)DataContext).IsSelectionMode}"
+                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+                                        </Grid>
+                                    
+                                    <TextBlock Text="{Binding Title}" Width="145" Height="50" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" />
                                     
                                 </StackPanel>
                             </DataTemplate>
@@ -94,31 +157,68 @@
         Height="250"
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
-            <StackPanel
-                Spacing="10">
+            <Canvas
+                >
+                <TextBlock 
+                    Text="New Video"
+                    FontFamily="fonts:MyFonts#Modern Antiqua"
+                    Foreground="#7DDEE7"
+                    Canvas.Left="130"
+                    Canvas.Top="10" />
                 <Button
                     Content="x"
-                    HorizontalAlignment="Right"
+                    Canvas.Right="5"
+                    Canvas.Top="5"
                     Width="30"
                     Background="#D45F79"
                     Foreground="#FFC59E"
                     Command="{Binding ClosePopUpCommand}" />
                 <Button
-                    Content="Choose File"
+                    Content="Upload Video"
                     FontFamily="fonts:MyFonts#Roboto"
                     Background="#D45F79"
                     Foreground="#FFC59E"
-                    HorizontalAlignment="Center"
-                    Command="{Binding OpenFileCommand}" />
-
-                <TextBlock>File Chosen:</TextBlock>
-                    
-                <TextBlock
-                    Text="{Binding Path}" />
-                <TextBlock
-                    Text="Title:" />
-                <TextBox Text="{Binding VideoTitle}"/>
+                    Canvas.Left="20"
+                    Canvas.Top="50"
+                    Width="133"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding OpenVideoFileCommand}" />
+                <TextBlock 
+                    Text="{Binding VideoFileName}" 
+                    TextTrimming="CharacterEllipsis"
+                    FontSize="10"
+                    Width="150"
+                    Foreground="White" 
+                    Canvas.Left="160" 
+                    Canvas.Top="57" />
+                <Button
+                    Content="Upload Thumbnail"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    Background="#D45F79"
+                    Foreground="#FFC59E"
+                    Canvas.Left="20"
+                    Canvas.Top="90"
+                    Command="{Binding OpenThumbnailFileCommand}" />
+                <TextBlock 
+                    Text="{Binding ThumbnailFileName}" 
+                    TextTrimming="CharacterEllipsis"
+                    FontSize="10"
+                    Width="150"
+                    Foreground="White" 
+                    Canvas.Left="160" 
+                    Canvas.Top="95" />
                 
+                <TextBlock
+                    Text="Title:"
+                    Foreground="White"
+                    Canvas.Left="20"
+                    Canvas.Top="135"
+                     />
+                <TextBox Text="{Binding VideoTitle}"
+                        BorderBrush="#7DDEE7"
+                        Canvas.Left="60"
+                        Canvas.Top="132"
+                        Width="265" />
                 
                 <Button
                     Content="Add Video"
@@ -126,12 +226,50 @@
                     FontFamily="fonts:MyFonts#Roboto"
                     Background="#D45F79"
                     Foreground="#FFC59E"
-                    HorizontalAlignment="Center"/>
+                    HorizontalAlignment="Center"
+                    Canvas.Bottom="15"
+                    Canvas.Left="125" />
 
     
-            </StackPanel>
+            </Canvas>
         </Border>
-        </Grid>             
+        </Grid>
+        <!-- Confirmation pop-up -->
+        <Grid IsVisible="{Binding IsConfirmationVisible}" Background="#80000000">
+            <Border Background="#2D6478"
+                CornerRadius="10"
+                Padding="10"
+                Width="350"
+                Height="150"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            
+            </Border>
+            <Grid ColumnDefinitions="100,*" RowDefinitions="30,*,*" HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" 
+                    Text=" Delete the Selected Video(s)?"  
+                    Foreground="#7DDEE7" 
+                    FontFamily="fonts:MyFonts#Modern Antiqua"
+                    FontSize="15" 
+                    HorizontalAlignment="Center"/>
+                <Button Width="80" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center"
+                    Content="Cancel"
+                    Command="{Binding CloseConfirmationCommand}"
+                    FontFamily="fonts:MyFonts#Roboto"
+                    HorizontalAlignment="Center"
+                    Background="#3F99A1"
+                    Foreground="#1D4958" />
+                <Button Width="80" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center"
+                    Content="Delete" 
+                    Command="{Binding ConfirmDeleteCommand}"
+                    FontFamily="fonts:MyFonts#Roboto" 
+                    HorizontalAlignment="Center" 
+                    Background="#D45F79"
+                    Foreground="#FFC59E"/>
+
+            </Grid> 
+        </Grid>                         
     </Grid>
 
 </Window>
