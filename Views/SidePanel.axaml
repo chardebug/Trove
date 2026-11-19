@@ -25,10 +25,5 @@
             FontFamily="fonts:MyFonts#Modern Antiqua"
             IsVisible="{Binding IsOpen}"/>
 
-        <TextBox Text="{Binding SearchText}"
-            Margin="40"
-            PlaceholderText="Search"
-            IsVisible="{Binding IsOpen}"/>
-
     </StackPanel>   
 </UserControl>
