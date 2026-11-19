@@ -21,7 +21,7 @@ public partial class App : Application
 
             var storageProvider = mainWindow.StorageProvider;
 
-            mainWindow.DataContext = new MainViewModel(storageProvider);
+            mainWindow.DataContext = new MainViewModel(storageProvider, new VideoPlayerLauncher());
 
             desktop.MainWindow = mainWindow;
         }
