@@ -1,11 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Trove.Models;
 using System.Collections.ObjectModel;
-using Trove.VLCPlayback;
-using LibVLCSharp.Shared;
+using System.IO;
+using Trove.Services;
+using System.Linq;
+
 
 namespace Trove.ViewModels;
 
@@ -30,42 +33,57 @@ public partial class MainViewModel : ObservableObject
 
     //Add button file picker
     private readonly IStorageProvider _storageProvider;
-    private readonly VideoPlayerService? _videoPlayerService;
 
-    public MediaPlayer? MediaPlayer => _videoPlayerService?.MediaPlayer;
-
+    private readonly IVideoPlayerLauncher _videoPlayer;
     [ObservableProperty]
     private string? _selectedVideoPath;
 
-    public MainViewModel() : this(null!, null)
+    public MainViewModel() : this(null!, null!)
     {
         
     }
 
-    public MainViewModel(IStorageProvider storageProvider) : this(storageProvider, null)
-    {
-    }
-
-    public MainViewModel(IStorageProvider storageProvider, VideoPlayerService? videoPlayerService)
+    public MainViewModel(IStorageProvider storageProvider, IVideoPlayerLauncher videoPlayer)
     {
         _storageProvider = storageProvider;
-        _videoPlayerService = videoPlayerService;
+        _videoPlayer = videoPlayer;
         SidePanel = new SidePanelViewModel(TogglePaneCommand, IsPaneOpen);
     }
+
+    // Stores whatever text the user types into the search box
+    [ObservableProperty]
+    public string searchText="";
+    
+    // Toolkit trigger: calls Search() whenever the search text changes
+    partial void OnSearchTextChanged(string value)
+    {
+        Search();
+    }
+    
+    // Master list of all videos in the library (prevents losing videos when filtering)
+    private List<VideoContainer>allVideos = new();
 
     //Video container collection
     public ObservableCollection<VideoContainer> Videos { get; } = [];
 
     [ObservableProperty]
-    private string? path = "None";
+    private string? videoFilePath = "None";
+
+    [ObservableProperty]
+    private string? thumbnailFilePath = "None";
+
+    [ObservableProperty]
+    private string videoFileName = "None";
+
+    [ObservableProperty]
+    private string thumbnailFileName = "None";
 
     [ObservableProperty]
     private string _videoTitle = string.Empty;
     [RelayCommand]
 
     //Opens OS file picker window and extracts file path
-    
-    private async Task OpenFileAsync()
+    private async Task OpenVideoFileAsync()
     {
         //only allow video files
         var videoFileType = new FilePickerFileType("Video Files")
@@ -83,11 +101,28 @@ public partial class MainViewModel : ObservableObject
         if (files.Count > 0)
         {
             //here is the file path
-            Path = files[0].TryGetLocalPath();
+            VideoFilePath = files[0].TryGetLocalPath();
+            VideoFileName = files[0].Name;
         }
     }
 
-    private string defaultThumbnail = "avares://Trove/Assets/VideoPlaceholderImage.png";
+    [RelayCommand]
+    private async Task OpenThumbnailFileAsync()
+    {
+
+        var files = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Select Thumbnail File",
+            AllowMultiple = false,
+            FileTypeFilter = [FilePickerFileTypes.ImageAll]
+        });
+        if (files.Count > 0)
+        { 
+            //here is the file path
+            ThumbnailFilePath = files[0].TryGetLocalPath();
+            ThumbnailFileName = files[0].Name;
+        }
+    }
 
     //add video button control
     [RelayCommand]
@@ -98,16 +133,21 @@ public partial class MainViewModel : ObservableObject
         var newVideo = new VideoContainer
         {
             Title = VideoTitle,
-            VideoPath = Path ?? string.Empty,
-            ThumbnailPath = defaultThumbnail
+            VideoPath = VideoFilePath ?? string.Empty,
+            ThumbnailPath = ThumbnailFilePath ?? string.Empty
         };
 
         //update grid
         Videos.Add(newVideo);
+        
+        allVideos.Add(newVideo);
 
         //clear inputs and close popup
         VideoTitle = string.Empty;
-        Path = string.Empty;
+        VideoFilePath = string.Empty;
+        ThumbnailFilePath = string.Empty;
+        VideoFileName = "None";
+        ThumbnailFileName = "None";
         IsPopUpVisible = false;
 
     }
@@ -126,6 +166,124 @@ public partial class MainViewModel : ObservableObject
     private void ClosePopUp()
     {
         IsPopUpVisible = false;
-        Path = string.Empty;
+        ThumbnailFilePath = string.Empty;
+        VideoFilePath = string.Empty;
+        VideoFileName = "None";
+        ThumbnailFileName = "None";
     }
+
+    //confirmation window toggles
+
+    [ObservableProperty]
+    private bool _IsConfirmationVisible;
+
+    [RelayCommand]
+    private void OpenConfirmation()
+    {
+        IsConfirmationVisible = true;
+    }
+
+    [RelayCommand]
+    private void CloseConfirmation()
+    {
+        IsConfirmationVisible = false;
+    }
+
+    //Select controls
+    [ObservableProperty]
+    private bool _IsSelectButtonVisible = true;
+
+    [ObservableProperty]
+    private bool _IsDeleteButtonVisible = false;
+
+    [ObservableProperty]
+    private bool _IsCancelButtonVisible = false;
+
+    //if selection mode is on, do not play videos
+    [ObservableProperty]  
+    [NotifyPropertyChangedFor(nameof(CanPlay), nameof(SelectButtonText))]
+    [NotifyCanExecuteChangedFor(nameof(PlayVideoCommand))]
+    private bool _isSelectionMode;
+
+    public bool CanPlay => !IsSelectionMode;
+    public string SelectButtonText => IsSelectionMode ? "Cancel" : "Select";
+
+    [RelayCommand]
+    private void ToggleSelectionMode()
+    {
+        IsSelectButtonVisible = !IsSelectButtonVisible;
+        IsSelectionMode = !IsSelectionMode;
+        IsDeleteButtonVisible = !IsDeleteButtonVisible;
+        IsCancelButtonVisible = !IsCancelButtonVisible;
+
+        //to do: make checkboxes visible
+    }
+
+    partial void OnIsSelectionModeChanged(bool value)
+    {
+        if (value) return;
+        foreach (var v in Videos) v.IsSelected = false;
+    }
+
+    //Video player command
+    [RelayCommand(CanExecute = nameof(CanPlay))]
+    private void PlayVideo(VideoContainer? video)
+    {
+        if (video is null || string.IsNullOrWhiteSpace(video.VideoPath)) return;
+        _videoPlayer.Play(video.VideoPath);
+    }
+
+    [RelayCommand]
+    private void ConfirmDelete()
+    {
+        var toRemove = Videos.Where(v => v.IsSelected).ToList();
+        foreach (var v in toRemove) Videos.Remove(v);
+        ToggleSelectionMode();
+        IsConfirmationVisible = false;
 }
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        ToggleSelectionMode();
+    }
+
+    // Search implementation: filters videos in real-time
+    [RelayCommand]
+    private void Search()
+    {
+        // Clear the current screen display
+         Videos.Clear();
+
+        // If the user cleared the box, restore the full library
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            foreach (var video in allVideos)
+            {
+                Videos.Add(video);
+            }
+            return; 
+        }
+
+        // Find and add matching videos (case-insensitive)
+        foreach(var video in allVideos)
+        {
+            if (video.Title.ToLower().StartsWith(SearchText.ToLower()))
+            {
+                Videos.Add(video);
+            }
+        }
+    }
+
+    // Resets search input and restores the original video library
+    [RelayCommand]
+    private void ResetSearch()
+    {
+        SearchText = "";
+
+    }
+    
+}
+
+
+
