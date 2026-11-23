@@ -6,8 +6,13 @@ using Avalonia.Platform.Storage;
 using Trove.Models;
 using System.Collections.ObjectModel;
 using System.IO;
+using System;
 using Trove.Services;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes; 
+using Microsoft.Data.Sqlite;
+using Trove.Database;
 
 
 namespace Trove.ViewModels;
@@ -32,22 +37,53 @@ public partial class MainViewModel : ObservableObject
     }
 
     //Add button file picker
-    private readonly IStorageProvider _storageProvider;
-
+    private readonly IStorageProvider? _storageProvider;
+    private readonly VideoRepository? _videoRepository;
     private readonly IVideoPlayerLauncher _videoPlayer;
     [ObservableProperty]
     private string? _selectedVideoPath;
 
-    public MainViewModel() : this(null!, null!)
+    public MainViewModel() : this(null, null!)
     {
         
     }
 
-    public MainViewModel(IStorageProvider storageProvider, IVideoPlayerLauncher videoPlayer)
+    public MainViewModel(IStorageProvider? storageProvider, IVideoPlayerLauncher videoPlayer)
     {
         _storageProvider = storageProvider;
         _videoPlayer = videoPlayer;
         SidePanel = new SidePanelViewModel(TogglePaneCommand, IsPaneOpen);
+
+        if (_storageProvider is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _videoRepository = new VideoRepository();
+            foreach (var video in _videoRepository.GetAllVideos())
+            {
+                Videos.Add(video);
+                allVideos.Add(video);
+            }
+        }
+        catch (SqliteException ex)
+        {
+            StatusMessage = $"Could not load the video library: {ex.Message}";
+        }
+        catch (IOException ex)
+        {
+            StatusMessage = $"Could not access the video database: {ex.Message}";
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            StatusMessage = $"Access to the video database was denied: {ex.Message}";
+        }
+        catch (InvalidOperationException ex)
+        {
+            StatusMessage = $"Could not initialize the video database: {ex.Message}";
+        }
     }
 
     // Stores whatever text the user types into the search box
@@ -80,11 +116,20 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string _videoTitle = string.Empty;
+
+    [ObservableProperty]
+    private string _statusMessage = string.Empty;
+
     [RelayCommand]
 
     //Opens OS file picker window and extracts file path
     private async Task OpenVideoFileAsync()
     {
+
+        if (_storageProvider is null)
+        {
+            return;
+        }
         //only allow video files
         var videoFileType = new FilePickerFileType("Video Files")
         {
@@ -101,14 +146,28 @@ public partial class MainViewModel : ObservableObject
         if (files.Count > 0)
         {
             //here is the file path
-            VideoFilePath = files[0].TryGetLocalPath();
+            var path = files[0].TryGetLocalPath();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                StatusMessage = "The selected video does not have a local file path.";
+                return;
+            }
+
+            VideoFilePath = path;
             VideoFileName = files[0].Name;
+            StatusMessage = string.Empty;
         }
     }
+    
 
     [RelayCommand]
     private async Task OpenThumbnailFileAsync()
     {
+
+        if (_storageProvider is null)
+        {
+            return;
+        }
 
         var files = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -117,8 +176,7 @@ public partial class MainViewModel : ObservableObject
             FileTypeFilter = [FilePickerFileTypes.ImageAll]
         });
         if (files.Count > 0)
-        { 
-            //here is the file path
+        {
             ThumbnailFilePath = files[0].TryGetLocalPath();
             ThumbnailFileName = files[0].Name;
         }
@@ -130,17 +188,60 @@ public partial class MainViewModel : ObservableObject
     
     {
         //create a new VideoContainer
+        if (_videoRepository is null)
+        {
+            StatusMessage = "The video library database is unavailable. Restart the app after resolving the database error.";
+            return;
+        }
+
+        var title = VideoTitle.Trim();
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            StatusMessage = "Enter a title for the video.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(VideoFilePath) || !File.Exists(VideoFilePath))
+        {
+            StatusMessage = "Select an existing video file before adding it.";
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(ThumbnailFilePath) && !File.Exists(ThumbnailFilePath))
+        {
+            StatusMessage = "The selected thumbnail file could not be found.";
+            ThumbnailFilePath = "avares://Trove/Assets/VideoPlaceholderImage.png";
+            //return;
+        }
+
         var newVideo = new VideoContainer
         {
-            Title = VideoTitle,
-            VideoPath = VideoFilePath ?? string.Empty,
+            Title = title,
+            VideoPath = VideoFilePath,
             ThumbnailPath = ThumbnailFilePath ?? string.Empty
         };
 
-        //update grid
-        Videos.Add(newVideo);
-        
-        allVideos.Add(newVideo);
+        try
+        {
+            newVideo.ID = _videoRepository.AddVideo(newVideo);
+            Videos.Add(newVideo);
+            allVideos.Add(newVideo);
+        }
+        catch (SqliteException ex)
+        {
+            StatusMessage = $"Could not save the video: {ex.Message}";
+            return;
+        }
+        catch (IOException ex)
+        {
+            StatusMessage = $"Could not access the video database: {ex.Message}";
+            return;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            StatusMessage = $"Access to the video database was denied: {ex.Message}";
+            return;
+        }
 
         //clear inputs and close popup
         VideoTitle = string.Empty;
