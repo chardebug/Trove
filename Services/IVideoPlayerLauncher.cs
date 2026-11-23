@@ -1,4 +1,4 @@
-// This is what MainViewModel depends on
+// This is whaat MainViewModel depends on
 namespace Trove.Services;
 
 public interface IVideoPlayerLauncher
