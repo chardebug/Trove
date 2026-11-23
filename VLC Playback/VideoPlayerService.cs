@@ -11,21 +11,23 @@ public sealed class VideoPlayerService : IDisposable
     private Media? _currentMedia;
     private bool _disposed;
 
+    //start a new instance of the player
     public VideoPlayerService()
     {
-        Core.Initialize();
         _libVlc = new LibVLC();
         _mediaPlayer = new MediaPlayer(_libVlc);
     }
 
     public MediaPlayer MediaPlayer => _mediaPlayer;
 
+    //play the video
     public void Play(string mediaPath)
     {
-        
+
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentException.ThrowIfNullOrWhiteSpace(mediaPath);
 
+        //error checking if file doesn't exist
         if (!File.Exists(mediaPath))
         {
             throw new FileNotFoundException("The video file could not be found.", mediaPath);
@@ -36,6 +38,7 @@ public sealed class VideoPlayerService : IDisposable
         _currentMedia?.Dispose();
         _currentMedia = null;
 
+        //throw an exception if the video couldn't be played
         try
         {
             if (!_mediaPlayer.Play(media))
@@ -52,18 +55,22 @@ public sealed class VideoPlayerService : IDisposable
         }
     }
 
+    //pause the video
     public void Pause()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _mediaPlayer.Pause();
     }
 
+    //stop the video
     public void Stop()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _mediaPlayer.Stop();
     }
 
+
+    //once the window is closed, clean up
     public void Dispose()
     {
         if (_disposed)
