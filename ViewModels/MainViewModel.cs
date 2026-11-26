@@ -64,6 +64,7 @@ public partial class MainViewModel : ObservableObject
             _videoRepository = new VideoRepository();
             foreach (var video in _videoRepository.GetAllVideos())
             {
+                allVideos.Add(video);
                 Videos.Add(video);
             }
         }
@@ -223,7 +224,8 @@ public partial class MainViewModel : ObservableObject
         try
         {
             newVideo.ID = _videoRepository.AddVideo(newVideo);
-            Videos.Add(newVideo);
+            allVideos.Add(newVideo);
+            Search();
         }
         catch (SqliteException ex)
         {
@@ -248,6 +250,7 @@ public partial class MainViewModel : ObservableObject
         VideoFileName = "None";
         ThumbnailFileName = "None";
         IsPopUpVisible = false;
+        StatusMessage = string.Empty;
 
     }
 
@@ -335,14 +338,43 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void ConfirmDelete()
     {
-        var toRemove = Videos.Where(v => v.IsSelected).ToList();
-        foreach (var v in toRemove) 
+        if (_videoRepository is null)
         {
-            Videos.Remove(v);
-            allVideos.Remove(v); // Removes video from master backup list as well
+            StatusMessage = "The video library database is unavailable. Restart the app after resolving the database error.";
+            return;
         }
+
+        var toRemove = allVideos.Where(video => video.IsSelected).ToList();
+
+        try
+        {
+            _videoRepository.DeleteVideos(toRemove.Select(video => video.ID).ToArray());
+        }
+        catch (SqliteException ex)
+        {
+            StatusMessage = $"Could not delete the video records: {ex.Message}";
+            return;
+        }
+        catch (IOException ex)
+        {
+            StatusMessage = $"Could not access the video database: {ex.Message}";
+            return;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            StatusMessage = $"Access to the video database was denied: {ex.Message}";
+            return;
+        }
+
+        foreach (var video in toRemove)
+        {
+            allVideos.Remove(video);
+        }
+
+        Search();
         ToggleSelectionMode();
         IsConfirmationVisible = false;
+        StatusMessage = string.Empty;
     }
 
     [RelayCommand]
@@ -387,6 +419,3 @@ public partial class MainViewModel : ObservableObject
     }
     
 }
-
-
-

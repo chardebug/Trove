@@ -88,6 +88,12 @@
                         Command="{Binding OpenPopUpCommand}" />
                 </Grid>
 
+                <TextBlock DockPanel.Dock="Top"
+                    Text="{Binding StatusMessage}"
+                    Foreground="#8B0000"
+                    Margin="8,0"
+                    TextWrapping="Wrap" />
+
             <!-- Main content block -->
                 <ScrollViewer>
                     <!-- Main collection of videos -->

@@ -98,6 +98,48 @@ public sealed class VideoRepository
                 "SQLite did not return the new video ID."));
     }
 
+    public void DeleteVideos(IReadOnlyCollection<long> videoIds)
+    {
+        if (videoIds.Count == 0)
+        {
+            return;
+        }
+
+        using var connection = OpenConnection();
+        using var transaction = connection.BeginTransaction();
+        using var deleteTagsCommand = connection.CreateCommand();
+        using var deleteVideoCommand = connection.CreateCommand();
+
+        deleteTagsCommand.Transaction = transaction;
+        deleteTagsCommand.CommandText =
+            "DELETE FROM Video_Tags WHERE video_id = $videoId;";
+        var tagsVideoIdParameter =
+            deleteTagsCommand.Parameters.Add("$videoId", SqliteType.Integer);
+
+        deleteVideoCommand.Transaction = transaction;
+        deleteVideoCommand.CommandText =
+            "DELETE FROM Video WHERE video_id = $videoId;";
+        var videoIdParameter =
+            deleteVideoCommand.Parameters.Add("$videoId", SqliteType.Integer);
+
+        var deletedIds = new HashSet<long>();
+        foreach (var videoId in videoIds)
+        {
+            if (!deletedIds.Add(videoId))
+            {
+                continue;
+            }
+
+            tagsVideoIdParameter.Value = videoId;
+            deleteTagsCommand.ExecuteNonQuery();
+
+            videoIdParameter.Value = videoId;
+            deleteVideoCommand.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
     private SqliteConnection OpenConnection()
     {
         var connection = new SqliteConnection(_connectionString);
